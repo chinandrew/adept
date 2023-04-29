@@ -324,3 +324,24 @@ test_that("Suite 1. Finetune_maxima unchanged", {
 
 })
 
+
+
+################################################################################
+################################################################################
+################################################################################
+
+context("Testing max row and column index")
+
+test_that("idx_to_rowcol correct", {
+  test_rows <- 5
+  test_cols <- 7
+  for (i in 1:test_rows){
+    for (j in 1:test_cols){
+      X <- matrix(NA, test_rows, test_cols)
+      X[i,j] <- 1
+      wm <- which.max(X)
+      expect_equal(idx_to_rowcol(wm, test_rows),
+                   unname(which(X == max(X, na.rm = TRUE), arr.ind = TRUE)[1, ]))
+    }
+  }
+})

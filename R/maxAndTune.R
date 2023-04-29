@@ -241,13 +241,10 @@ maxAndTune <- function(x,
       # equivalent to previous all(is.na(similarity.mat)) check
       break
     }
-    simrows = dim(similarity.mat)[1]  # using nrow() is much slower for some unknown reason
-    mrow = wm %% simrows
-    endrow = mrow == 0
-    mrow = ifelse(endrow , simrows, mrow)
-    mcol = ifelse(endrow, wm %/% simrows, wm %/% simrows + 1)
-    similarity.mat.MAX <- similarity.mat[mrow, mcol]
-    similarity.mat.MAX.IDX <- c(mrow, mcol)
+    similarity.mat.MAX.IDX <-
+      idx_to_rowcol(wm, dim(similarity.mat)[1]) # using nrow() is much slower for some unknown reason
+    similarity.mat.MAX <-
+      similarity.mat[similarity.mat.MAX.IDX[1], similarity.mat.MAX.IDX[2]]
 
     if (similarity.mat.MAX < similarity.measure.thresh) {
       break
@@ -313,3 +310,13 @@ maxAndTune <- function(x,
 
 }
 
+
+#' @noRd
+#'
+idx_to_rowcol <- function(idx, numrows) {
+  mrow <- idx %% numrows
+  endrow <- mrow == 0
+  mrow <- ifelse(endrow, numrows, mrow)
+  mcol <- ifelse(endrow, idx %/% numrows, idx %/% numrows + 1)
+  return(c(mrow, mcol))
+}

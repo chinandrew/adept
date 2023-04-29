@@ -235,12 +235,20 @@ maxAndTune <- function(x,
     # if (max.empty < template.vl.min){
     #   break
     # }
-    if (all(is.na(similarity.mat))){
+    ## Determine current maximum value in similarity matrix
+    wm = which.max(similarity.mat)
+    if (!any(wm)) {
+      # equivalent to previous all(is.na(similarity.mat)) check
       break
     }
+    simrows = dim(similarity.mat)[1]  # using nrow() is much slower for some unknown reason
+    mrow = wm %% simrows
+    endrow = mrow == 0
+    mrow = ifelse(endrow , simrows, mrow)
+    mcol = ifelse(endrow, wm %/% simrows, wm %/% simrows + 1)
+    similarity.mat.MAX <- similarity.mat[mrow, mcol]
+    similarity.mat.MAX.IDX <- c(mrow, mcol)
 
-    ## Determine current maximum value in similarity matrix
-    similarity.mat.MAX <- max(similarity.mat, na.rm = TRUE)
     if (similarity.mat.MAX < similarity.measure.thresh) {
       break
     }
@@ -250,7 +258,6 @@ maxAndTune <- function(x,
     ## tau: expressed as index of x vector
     ## Mar 5, 2019 @MK: fix the discrepancies caused by floating precision
     ## May 5, 2019 @MK: restore the previous code line here
-    similarity.mat.MAX.IDX <- which(similarity.mat == similarity.mat.MAX, arr.ind = TRUE)[1, ]
     # similarity.mat.MAX.IDX <- which(similarity.mat + tol > similarity.mat.MAX, arr.ind = TRUE)[1, ]
     tau.TMP     <- similarity.mat.MAX.IDX[2]
     s.TMP       <- template.vl[similarity.mat.MAX.IDX[1]]

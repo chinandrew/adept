@@ -62,13 +62,15 @@
 #' axis(1, at = xaxis/max(xaxis), labels = xaxis)
 #' axis(2, at = (yaxis - min(yaxis))/(max(yaxis) - min(yaxis)), labels = yaxis)
 #'
+#' @useDynLib adept
+#' @importFrom Rcpp sourceCpp
 similarityMatrix <- function(x,
                             template.scaled,
                             similarity.measure){
 
   sliding.func <- switch(similarity.measure,
-                         "cov" = sliding_cov,
-                         "cor" = sliding_cor)
+                         "cov" = sliding_cov2,
+                         "cor" = sliding_cor2)
 
   ## Outer lapply: iterate over pattern scales considered;
   ## each lapply iteration fills one row of the output similarity matrix.
@@ -92,7 +94,19 @@ similarityMatrix <- function(x,
 
 }
 
+#' @noRd
+#'
+sliding_cov2 <- function(long, short) {
+  n = length(short)
+  len_diff = length(long) - n
+  convolve_cpp(long, rev(short / (n - 1) - sum(short) / n / (n - 1)))[n:(n + len_diff)]
+}
 
+#' @noRd
+#'
+sliding_cor2 <- function(long, short) {
+  sliding_cor_cpp(short, long, sd(short))
+}
 
 
 

@@ -1,9 +1,9 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
-
+// From https://dirk.eddelbuettel.com/code/rcpp/Rcpp-attributes.pdf
 // [[Rcpp::export]]
-NumericVector convolve_cpp(NumericVector a, NumericVector b) {
+NumericVector convolve_cpp(const NumericVector a, const NumericVector b) {
   int na = a.size(), nb = b.size();
   int nab = na + nb - 1;
   NumericVector xab(nab);
@@ -13,9 +13,11 @@ NumericVector convolve_cpp(NumericVector a, NumericVector b) {
   return xab;
 }
 
-// Optimized version of https://github.com/cran/dvmisc/blob/master/src/sliding_cor_c.cpp
+// Optimized version of
+// https://github.com/cran/dvmisc/blob/master/src/sliding_cor_c.cpp
 // [[Rcpp::export]]
-NumericVector sliding_cor_cpp(const NumericVector shortvec, const NumericVector longvec, double sd_shortvec) {
+NumericVector sliding_cor_cpp(const NumericVector shortvec,
+                              const NumericVector longvec, double sd_shortvec) {
 
   // Get vector lengths and initialize output vector
   int length_longvec = longvec.size();
@@ -48,21 +50,23 @@ NumericVector sliding_cor_cpp(const NumericVector shortvec, const NumericVector 
     ss_longvec_current += pow(longvec_current_b - mean_longvec_current, 2);
   }
   double sd_longvec_current = sqrt(ss_longvec_current / n_minus1);
-  out[0] = (sum_products / n_minus1 - sum_longvec_current * term2) / sd_shortvec / sd_longvec_current;
+  out[0] = (sum_products / n_minus1 - sum_longvec_current * term2) /
+    sd_shortvec / sd_longvec_current;
 
   for (int a = 1; a < out_length; ++a) {
-    sum_longvec_current -= longvec[a-1];
-    sum_longvec_current += longvec[a+n_minus1];
+    sum_longvec_current -= longvec[a - 1];
+    sum_longvec_current += longvec[a + n_minus1];
     mean_longvec_current = sum_longvec_current / n;
     sum_products = 0;
     ss_longvec_current = 0;
     for (int b = 0; b < n; ++b) {
-      double longvec_current_b = longvec[a+b];
+      double longvec_current_b = longvec[a + b];
       sum_products += longvec_current_b * shortvec[b];
       ss_longvec_current += pow(longvec_current_b - mean_longvec_current, 2);
     }
     sd_longvec_current = sqrt(ss_longvec_current / n_minus1);
-    out[a] = (sum_products / n_minus1 - sum_longvec_current * term2) / sd_shortvec / sd_longvec_current;
+    out[a] = (sum_products / n_minus1 - sum_longvec_current * term2) /
+      sd_shortvec / sd_longvec_current;
   }
   return out;
 }

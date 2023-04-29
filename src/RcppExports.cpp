@@ -11,13 +11,13 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // convolve_cpp
-NumericVector convolve_cpp(NumericVector a, NumericVector b);
+NumericVector convolve_cpp(const NumericVector a, const NumericVector b);
 RcppExport SEXP _adept_convolve_cpp(SEXP aSEXP, SEXP bSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type a(aSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type b(bSEXP);
+    Rcpp::traits::input_parameter< const NumericVector >::type a(aSEXP);
+    Rcpp::traits::input_parameter< const NumericVector >::type b(bSEXP);
     rcpp_result_gen = Rcpp::wrap(convolve_cpp(a, b));
     return rcpp_result_gen;
 END_RCPP

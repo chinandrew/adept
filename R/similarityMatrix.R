@@ -95,6 +95,10 @@ similarityMatrix <- function(x,
 }
 
 
+
+
+
+
 #' Template Index Matrix Computation
 #'
 #' Compute matrix of pattern templates yielding the highest similarity

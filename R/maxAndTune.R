@@ -236,7 +236,7 @@ maxAndTune <- function(x,
     #   break
     # }
     ## Determine current maximum value in similarity matrix
-    wm = which.max(similarity.mat)
+    wm <- which.max(similarity.mat)
     if (!any(wm)) {
       # equivalent to previous all(is.na(similarity.mat)) check
       break
@@ -309,7 +309,6 @@ maxAndTune <- function(x,
   return(out.df)
 
 }
-
 
 #' @noRd
 #'

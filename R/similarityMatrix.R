@@ -68,8 +68,8 @@ similarityMatrix <- function(x,
                             similarity.measure){
 
   sliding.func <- switch(similarity.measure,
-                         "cov" = sliding_cov2,
-                         "cor" = sliding_cor2)
+                         "cov" = sliding_cov_fast,
+                         "cor" = sliding_cor_fast)
 
   ## Outer lapply: iterate over pattern scales considered;
   ## each lapply iteration fills one row of the output similarity matrix.

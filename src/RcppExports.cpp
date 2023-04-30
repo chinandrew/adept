@@ -23,37 +23,35 @@ BEGIN_RCPP
 END_RCPP
 }
 // sliding_cor_sd_cpp
-NumericVector sliding_cor_sd_cpp(const NumericVector shortvec, const NumericVector longvec, double sd_shortvec, const NumericVector sd_longvec_current);
-RcppExport SEXP _adept_sliding_cor_sd_cpp(SEXP shortvecSEXP, SEXP longvecSEXP, SEXP sd_shortvecSEXP, SEXP sd_longvec_currentSEXP) {
+NumericVector sliding_cor_sd_cpp(const NumericVector shortvec, const NumericVector longvec, const NumericVector sd_longvec_current);
+RcppExport SEXP _adept_sliding_cor_sd_cpp(SEXP shortvecSEXP, SEXP longvecSEXP, SEXP sd_longvec_currentSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const NumericVector >::type shortvec(shortvecSEXP);
     Rcpp::traits::input_parameter< const NumericVector >::type longvec(longvecSEXP);
-    Rcpp::traits::input_parameter< double >::type sd_shortvec(sd_shortvecSEXP);
     Rcpp::traits::input_parameter< const NumericVector >::type sd_longvec_current(sd_longvec_currentSEXP);
-    rcpp_result_gen = Rcpp::wrap(sliding_cor_sd_cpp(shortvec, longvec, sd_shortvec, sd_longvec_current));
+    rcpp_result_gen = Rcpp::wrap(sliding_cor_sd_cpp(shortvec, longvec, sd_longvec_current));
     return rcpp_result_gen;
 END_RCPP
 }
 // sliding_cor_store_sd_cpp
-List sliding_cor_store_sd_cpp(const NumericVector shortvec, const NumericVector longvec, double sd_shortvec);
-RcppExport SEXP _adept_sliding_cor_store_sd_cpp(SEXP shortvecSEXP, SEXP longvecSEXP, SEXP sd_shortvecSEXP) {
+List sliding_cor_store_sd_cpp(const NumericVector shortvec, const NumericVector longvec);
+RcppExport SEXP _adept_sliding_cor_store_sd_cpp(SEXP shortvecSEXP, SEXP longvecSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const NumericVector >::type shortvec(shortvecSEXP);
     Rcpp::traits::input_parameter< const NumericVector >::type longvec(longvecSEXP);
-    Rcpp::traits::input_parameter< double >::type sd_shortvec(sd_shortvecSEXP);
-    rcpp_result_gen = Rcpp::wrap(sliding_cor_store_sd_cpp(shortvec, longvec, sd_shortvec));
+    rcpp_result_gen = Rcpp::wrap(sliding_cor_store_sd_cpp(shortvec, longvec));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
     {"_adept_convolve_cpp", (DL_FUNC) &_adept_convolve_cpp, 2},
-    {"_adept_sliding_cor_sd_cpp", (DL_FUNC) &_adept_sliding_cor_sd_cpp, 4},
-    {"_adept_sliding_cor_store_sd_cpp", (DL_FUNC) &_adept_sliding_cor_store_sd_cpp, 3},
+    {"_adept_sliding_cor_sd_cpp", (DL_FUNC) &_adept_sliding_cor_sd_cpp, 3},
+    {"_adept_sliding_cor_store_sd_cpp", (DL_FUNC) &_adept_sliding_cor_store_sd_cpp, 2},
     {NULL, NULL, 0}
 };
 

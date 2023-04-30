@@ -5,11 +5,11 @@ convolve_cpp <- function(a, b) {
     .Call('_adept_convolve_cpp', PACKAGE = 'adept', a, b)
 }
 
-sliding_cor_sd_cpp <- function(shortvec, longvec, sd_shortvec, sd_longvec_current) {
-    .Call('_adept_sliding_cor_sd_cpp', PACKAGE = 'adept', shortvec, longvec, sd_shortvec, sd_longvec_current)
+sliding_cor_sd_cpp <- function(shortvec, longvec, sd_longvec_current) {
+    .Call('_adept_sliding_cor_sd_cpp', PACKAGE = 'adept', shortvec, longvec, sd_longvec_current)
 }
 
-sliding_cor_store_sd_cpp <- function(shortvec, longvec, sd_shortvec) {
-    .Call('_adept_sliding_cor_store_sd_cpp', PACKAGE = 'adept', shortvec, longvec, sd_shortvec)
+sliding_cor_store_sd_cpp <- function(shortvec, longvec) {
+    .Call('_adept_sliding_cor_store_sd_cpp', PACKAGE = 'adept', shortvec, longvec)
 }
 

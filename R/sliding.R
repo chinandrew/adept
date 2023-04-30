@@ -8,7 +8,12 @@ sliding_cov_fast <- function(short, long) {
 
 #' @noRd
 #'
-sliding_cor_fast <- function(short, long) {
-  return(sliding_cor_cpp(short, long, sd(short)))
+sliding_cor_store_sd <- function(short, long) {
+  return(sliding_cor_store_sd_cpp(short, long, sd(short)))
 }
 
+#' @noRd
+#'
+sliding_cor_sd <- function(short, long, sds) {
+  return(sliding_cor_sd_cpp(short, long, sd(short), sds))
+}

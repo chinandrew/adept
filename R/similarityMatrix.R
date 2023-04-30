@@ -64,33 +64,41 @@
 #' @useDynLib adept
 #' @importFrom Rcpp sourceCpp
 similarityMatrix <- function(x,
-                            template.scaled,
-                            similarity.measure){
+                              template.scaled,
+                              similarity.measure){
 
-  sliding.func <- switch(similarity.measure,
-                         "cov" = sliding_cov_fast,
-                         "cor" = sliding_cor_fast)
+  if (similarity.measure == "cov") {
+    similarity.list <- lapply(template.scaled, function(template.scaled.i){
 
-  ## Outer lapply: iterate over pattern scales considered;
-  ## each lapply iteration fills one row of the output similarity matrix.
-  similarity.list <- lapply(template.scaled, function(template.scaled.i){
-
-    ## Inner lapply: iterate over, possibly, multiple patterns;
-    ## each lapply iteration returns a vector whose each element corresponds
-    ## to the highest value of similarity between signal \code{x} and
-    ## a short pattern
-    ## at a time point corresponding to this vector's element.
-    sliding.func.out0 <- lapply(template.scaled.i, function(template.scaled.ik){
-      do.call(sliding.func, list(long = x, short = template.scaled.ik))
+      ## Inner lapply: iterate over, possibly, multiple patterns;
+      ## each lapply iteration returns a vector whose each element corresponds
+      ## to the highest value of similarity between signal \code{x} and
+      ## a short pattern
+      ## at a time point corresponding to this vector's element.
+      sliding.func.out0 <- lapply(template.scaled.i, function(template.scaled.ik){
+        sliding_cov_fast(long = x, short = template.scaled.ik)
+      })
+      c(do.call(pmax, sliding.func.out0), rep(NA, length(template.scaled.i[[1]]) - 1))
     })
-
-    c(do.call(pmax, sliding.func.out0), rep(NA, length(template.scaled.i[[1]]) - 1))
-  })
-
+  } else if  (similarity.measure == "cor") {
+    similarity.list <- lapply(template.scaled, function(template.scaled.i){
+      for (k in 1:length(template.scaled.i)){
+        if (k==1){
+          first_template = sliding_cor_store_sd(long = x, short = template.scaled.i[[k]])
+          current_max = first_template$cor
+        } else {
+          new_template = sliding_cor_sd(long = x, short = template.scaled.i[[k]], sds = first_template$sds)
+          current_max = pmax(current_max, new_template)
+        }
+      }
+      c(current_max, rep(NA, length(template.scaled.i[[1]]) - 1))
+    })
+  } else {
+    stop("Only 'cov' and 'cor' measures supported")
+  }
   ## rbind list elements (which are vectors) into a matrix
   similarity.mat <- do.call(rbind, similarity.list)
   return(similarity.mat)
-
 }
 
 

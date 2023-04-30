@@ -10,6 +10,17 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// median_cpp
+double median_cpp(NumericVector x);
+RcppExport SEXP _adept_median_cpp(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(median_cpp(x));
+    return rcpp_result_gen;
+END_RCPP
+}
 // convolve_cpp
 NumericVector convolve_cpp(const NumericVector a, const NumericVector b);
 RcppExport SEXP _adept_convolve_cpp(SEXP aSEXP, SEXP bSEXP) {
@@ -49,6 +60,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_adept_median_cpp", (DL_FUNC) &_adept_median_cpp, 1},
     {"_adept_convolve_cpp", (DL_FUNC) &_adept_convolve_cpp, 2},
     {"_adept_sliding_cor_sd_cpp", (DL_FUNC) &_adept_sliding_cor_sd_cpp, 3},
     {"_adept_sliding_cor_store_sd_cpp", (DL_FUNC) &_adept_sliding_cor_store_sd_cpp, 2},

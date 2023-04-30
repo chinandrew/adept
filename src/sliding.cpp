@@ -26,13 +26,6 @@ NumericVector sliding_cor_cpp(const NumericVector shortvec,
   int out_length = length_longvec - n_minus1;
   NumericVector out(out_length);
 
-  // Calculate constant term to multiply all
-  double mean_shortvec = sum(shortvec) / n;
-  double ss_shortvec = 0;
-  for (int a = 0; a < n; ++a) {
-    ss_shortvec += pow(shortvec[a] - mean_shortvec, 2);
-  }
-
   // Calculate sum of short vector divided by n nsquared
   double term2 = sum(shortvec) / n / n_minus1;
 

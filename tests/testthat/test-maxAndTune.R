@@ -337,8 +337,7 @@ test_that("idx_to_rowcol correct", {
       X <- matrix(NA, test_rows, test_cols)
       X[i,j] <- 1
       wm <- which.max(X)
-      expect_equal(idx_to_rowcol(wm, test_rows),
-                   unname(which(X == max(X, na.rm = TRUE), arr.ind = TRUE)[1, ]))
+      expect_equal(idx_to_rowcol(wm, test_rows), c(i,j))
     }
   }
 })

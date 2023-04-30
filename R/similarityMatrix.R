@@ -34,7 +34,6 @@
 #' @seealso \code{scaleTemplate {adept}}
 #'
 #' @export
-#' @import dvmisc
 #'
 #' @examples
 #' ## Simulate data

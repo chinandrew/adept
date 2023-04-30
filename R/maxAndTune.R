@@ -242,7 +242,7 @@ maxAndTune <- function(x,
       break
     }
     similarity.mat.MAX.IDX <-
-      idx_to_rowcol(wm, dim(similarity.mat)[1]) # using nrow() is much slower for some unknown reason
+      idx_to_rowcol(wm, mat.nrow)
     similarity.mat.MAX <-
       similarity.mat[similarity.mat.MAX.IDX[1], similarity.mat.MAX.IDX[2]]
 

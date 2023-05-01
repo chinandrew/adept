@@ -85,8 +85,13 @@ List sliding_cor_store_sd_cpp(const NumericVector shortvec, const NumericVector 
     ss_longvec_current += pow(longvec_current_b - mean_longvec_current, 2);
   }
   double sd_longvec_current = sqrt(ss_longvec_current / n_minus1);
-  out[0] = (sum_products / n_minus1) / sd_longvec_current;
-  sds[0] = sd_longvec_current;
+  if (sd_longvec_current < 1e-10){
+    out[0] =  NA_REAL;
+    sds[0] =  NA_REAL; // could also set to 0 to get Infs downstream
+  } else{
+    out[0] = (sum_products / n_minus1) / sd_longvec_current;
+    sds[0] = sd_longvec_current;
+  }
   for (int a = 1; a < out_length; ++a) {
     sum_longvec_current -= longvec[a-1];
     sum_longvec_current += longvec[a+n_minus1];
@@ -98,10 +103,15 @@ List sliding_cor_store_sd_cpp(const NumericVector shortvec, const NumericVector 
       sum_products += longvec_current_b * shortvec[b];
       ss_longvec_current += pow(longvec_current_b - mean_longvec_current, 2);
     }
-
+    if (sd_longvec_current < 1e-10){
+      out[a] =  NA_REAL;
+      sds[a] =  NA_REAL;
+    } else{
+      out[a] = (sum_products / n_minus1) / sd_longvec_current;
+      sds[a] = sd_longvec_current;
+    }
     sd_longvec_current = sqrt(ss_longvec_current / n_minus1);
-    out[a] = (sum_products / n_minus1) / sd_longvec_current;
-    sds[a] = sd_longvec_current;
+
   }
   return List::create(_["cor"] = out, _["sds"] = sds);
 }

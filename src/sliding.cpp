@@ -35,7 +35,6 @@ NumericVector sliding_cor_sd_cpp(const NumericVector shortvec,
   NumericVector longvec_current(n);
   longvec_current = longvec[Range(0, n_minus1)];
   double sum_longvec_current = sum(longvec_current);
-  double mean_longvec_current = sum_longvec_current / n;
   double sum_products = 0;
   for (int b = 0; b < n; ++b) {
     double longvec_current_b = longvec[b];
@@ -46,7 +45,6 @@ NumericVector sliding_cor_sd_cpp(const NumericVector shortvec,
   for (int a = 1; a < out_length; ++a) {
     sum_longvec_current -= longvec[a-1];
     sum_longvec_current += longvec[a+n_minus1];
-    mean_longvec_current = sum_longvec_current / n;
     sum_products = 0;
     for (int b = 0; b < n; ++b) {
       double longvec_current_b = longvec[a+b];

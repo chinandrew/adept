@@ -74,6 +74,8 @@ similarityMatrix <- function(x,
         ## to the highest value of similarity between signal \code{x} and
         ## a short pattern
         ## at a time point corresponding to this vector's element.
+
+        ## TODO factor out into its own function
         if (length(template.scaled.i[[1]])<400){
           sliding.func.out0 <-
             lapply(template.scaled.i, function(template.scaled.ik) {
@@ -90,6 +92,8 @@ similarityMatrix <- function(x,
   } else if (similarity.measure == "cor") {
     similarity.list <-
       lapply(template.scaled, function(template.scaled.i) {
+
+        ## TODO factor out into its own function
         for (k in 1:length(template.scaled.i)) {
           if (k == 1) {
             first_template = sliding_cor_store_sd(long = x, short = template.scaled.i[[k]])

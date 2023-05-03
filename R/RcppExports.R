@@ -5,6 +5,10 @@ median_cpp <- function(x) {
     .Call('_adept_median_cpp', PACKAGE = 'adept', x)
 }
 
+pmax_max_cpp <- function(args) {
+    .Call('_adept_pmax_max_cpp', PACKAGE = 'adept', args)
+}
+
 convolve_cpp <- function(a, b) {
     .Call('_adept_convolve_cpp', PACKAGE = 'adept', a, b)
 }

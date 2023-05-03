@@ -1,6 +1,33 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
+
+// Adapted from https://stackoverflow.com/a/66020829,
+// Vectors should be of the same length.
+// [[Rcpp::export]]
+List pmax_max_cpp(List args) {
+  // int max_i = 0;
+  int max_j = 0;
+  NumericVector tmp = args[0];
+  NumericVector out = clone(tmp);
+  NumericVector out_idx (out.length(), 1);
+  double current_max = out[0];
+  int n_arg = args.length();
+  int n_vec = out.length();
+  for (int i = 1; i < n_arg; ++i) {
+    NumericVector pa = args[i];
+    for (int j = 0; j < n_vec; ++j) {
+      if (pa[j] > out[j]) {
+        out[j] = pa[j];
+        out_idx[j] = i + 1;
+      }
+    }
+  }
+  return List::create(_["pmax"]=out,
+                      _["idx"]=out_idx);
+}
+
+
 // From https://dirk.eddelbuettel.com/code/rcpp/Rcpp-attributes.pdf
 // [[Rcpp::export]]
 NumericVector convolve_cpp(const NumericVector a, const NumericVector b) {
@@ -36,6 +63,7 @@ NumericVector sliding_cor_sd_cpp(const NumericVector shortvec,
   longvec_current = longvec[Range(0, n_minus1)];
   double sum_longvec_current = sum(longvec_current);
   double sum_products = 0;
+  double test = 0;
   for (int b = 0; b < n; ++b) {
     double longvec_current_b = longvec[b];
     sum_products += longvec_current_b * shortvec[b];

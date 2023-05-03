@@ -21,6 +21,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// pmax_max_cpp
+List pmax_max_cpp(List args);
+RcppExport SEXP _adept_pmax_max_cpp(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(pmax_max_cpp(args));
+    return rcpp_result_gen;
+END_RCPP
+}
 // convolve_cpp
 NumericVector convolve_cpp(const NumericVector a, const NumericVector b);
 RcppExport SEXP _adept_convolve_cpp(SEXP aSEXP, SEXP bSEXP) {
@@ -61,6 +72,7 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_adept_median_cpp", (DL_FUNC) &_adept_median_cpp, 1},
+    {"_adept_pmax_max_cpp", (DL_FUNC) &_adept_pmax_max_cpp, 1},
     {"_adept_convolve_cpp", (DL_FUNC) &_adept_convolve_cpp, 2},
     {"_adept_sliding_cor_sd_cpp", (DL_FUNC) &_adept_sliding_cor_sd_cpp, 3},
     {"_adept_sliding_cor_store_sd_cpp", (DL_FUNC) &_adept_sliding_cor_store_sd_cpp, 2},

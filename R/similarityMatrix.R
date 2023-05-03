@@ -88,8 +88,8 @@ similarityMatrix <- function(x,
             sliding_cov_fft(long = x, short = template.scaled.ik)
           })
       }
-      maxes = pmax_max_cpp(sliding.func.out0)
-      padding = rep(NA, length(template.scaled.i[[1]]) - 1)
+      maxes <- pmax_max_cpp(sliding.func.out0)
+      padding <- rep(NA, length(template.scaled.i[[1]]) - 1)
       list(c(maxes$pmax, padding),
            c(maxes$idx, padding))
     })
@@ -97,17 +97,17 @@ similarityMatrix <- function(x,
     similarity.list <- lapply(template.scaled, function(template.scaled.i){
       for (k in 1:length(template.scaled.i)){
         if (k==1){
-          first_template = sliding_cor_store_sd(long = x, short = template.scaled.i[[k]])
-          current_max = first_template$cor
-          current_max_idx = rep(1, length(first_template$cor))
+          first_template <- sliding_cor_store_sd(long = x, short = template.scaled.i[[k]])
+          current_max <- first_template$cor
+          current_max_idx <- rep(1, length(first_template$cor))
         } else {
-          new_template = sliding_cor_sd(long = x, short = template.scaled.i[[k]], sds = first_template$sds)
-          current_max = pmax_max_cpp(list(current_max, new_template))
-          current_max_idx = current_max$idx * ( current_max$idx - 1 ) + current_max_idx * (2- current_max$idx)
-          current_max = current_max$pmax
+          new_template <- sliding_cor_sd(long = x, short = template.scaled.i[[k]], sds = first_template$sds)
+          current_max <- pmax_max_cpp(list(current_max, new_template))
+          current_max_idx <- k * ( current_max$idx - 1 ) + current_max_idx * (2- current_max$idx)
+          current_max <- current_max$pmax
         }
       }
-      padding = rep(NA, length(template.scaled.i[[1]]) - 1)
+      padding <- rep(NA, length(template.scaled.i[[1]]) - 1)
       list(c(current_max, padding),
            c(current_max_idx, padding))
     })
@@ -115,8 +115,8 @@ similarityMatrix <- function(x,
     stop("Only 'cov' and 'cor' measures supported")
   }
   ## rbind list elements (which are vectors) into a matrix
-  similarity = lapply(similarity.list, function(i){i[[1]]})
-  similarity_idx = lapply(similarity.list, function(i){i[[2]]})
+  similarity <- lapply(similarity.list, function(i){i[[1]]})
+  similarity_idx <- lapply(similarity.list, function(i){i[[2]]})
   similarity.mat <- do.call(rbind, similarity)
   similarity_idx.mat <- do.call(rbind, similarity_idx)
   return(list("similarity" = similarity.mat, "idx" = similarity_idx.mat))

@@ -98,18 +98,15 @@ similarityMatrix <- function(x,
       for (k in 1:length(template.scaled.i)){
         if (k==1){
           first_template <- sliding_cor_store_sd(long = x, short = template.scaled.i[[k]])
-          current_max <- first_template$cor
-          current_max_idx <- rep(1, length(first_template$cor))
+          current_max <- list("pmax" = first_template$cor, "idx" = rep(1, length(first_template$cor)))
         } else {
           new_template <- sliding_cor_sd(long = x, short = template.scaled.i[[k]], sds = first_template$sds)
-          current_max <- pmax_max_cpp(list(current_max, new_template))
-          current_max_idx <- k * ( current_max$idx - 1 ) + current_max_idx * (2- current_max$idx)
-          current_max <- current_max$pmax
+          current_max <- update_pmax_max_cpp(new_template, k, current_max$pmax, current_max$idx)
         }
       }
       padding <- rep(NA, length(template.scaled.i[[1]]) - 1)
-      list(c(current_max, padding),
-           c(current_max_idx, padding))
+      list(c(current_max$pmax, padding),
+           c(current_max$idx, padding))
     })
   } else {
     stop("Only 'cov' and 'cor' measures supported")

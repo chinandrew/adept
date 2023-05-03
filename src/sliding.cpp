@@ -2,6 +2,23 @@
 using namespace Rcpp;
 
 
+
+// [[Rcpp::export]]
+List update_pmax_max_cpp(NumericVector new_vec, int new_idx, NumericVector old_vec, NumericVector old_idxs) {
+  // int max_i = 0;
+  NumericVector out = clone(old_vec);
+  NumericVector out_idx = clone(old_idxs);
+  for (int i = 0; i < out.length(); ++i) {
+    if (new_vec[i] > old_vec[i]){
+      out_idx[i] = new_idx;
+      out[i] = new_vec[i];
+    }
+  }
+  return List::create(_["pmax"]=out,
+                      _["idx"]=out_idx);
+}
+
+
 // Adapted from https://stackoverflow.com/a/66020829,
 // Vectors should be of the same length.
 // [[Rcpp::export]]

@@ -69,59 +69,29 @@ similarityMatrix <- function(x,
   if (similarity.measure == "cov") {
     similarity.list <-
       lapply(template.scaled, function(template.scaled.i) {
-        ## Inner lapply: iterate over, possibly, multiple patterns;
-        ## each lapply iteration returns a vector whose each element corresponds
-        ## to the highest value of similarity between signal \code{x} and
-        ## a short pattern
-        ## at a time point corresponding to this vector's element.
 
-<<<<<<< HEAD
-        ## TODO factor out into its own function
-        if (length(template.scaled.i[[1]])<400){
-          sliding.func.out0 <-
-            lapply(template.scaled.i, function(template.scaled.ik) {
-              sliding_cov_fast(long = x, short = template.scaled.ik)
-            })
-        } else {
-          sliding.func.out0 <-
-            lapply(template.scaled.i, function(template.scaled.ik) {
-              sliding_cov_fft(long = x, short = template.scaled.ik)
-            })
-        }
-        c(do.call(pmax, sliding.func.out0), rep(NA, length(template.scaled.i[[1]]) - 1))
-      })
-  } else if (similarity.measure == "cor") {
-    similarity.list <-
-      lapply(template.scaled, function(template.scaled.i) {
-
-        ## TODO factor out into its own function
-        for (k in 1:length(template.scaled.i)) {
-          if (k == 1) {
-            first_template = sliding_cor_store_sd(long = x, short = template.scaled.i[[k]])
-            current_max = first_template$cor
-          } else {
-            new_template = sliding_cor_sd(long = x,
-                                          short = template.scaled.i[[k]],
-                                          sds = first_template$sds)
-            current_max = pmax(current_max, new_template)
-          }
-        }
-        c(current_max, rep(NA, length(template.scaled.i[[1]]) - 1))
-      })
-=======
       ## Inner lapply: iterate over, possibly, multiple patterns;
       ## each lapply iteration returns a vector whose each element corresponds
       ## to the highest value of similarity between signal \code{x} and
       ## a short pattern
       ## at a time point corresponding to this vector's element.
-      sliding.func.out0 <- lapply(template.scaled.i, function(template.scaled.ik){
-        sliding_cov_fast(long = x, short = template.scaled.ik)
-      })
+
+      ## TODO factor out into its own function
+      if (length(template.scaled.i[[1]])<400){
+        sliding.func.out0 <-
+          lapply(template.scaled.i, function(template.scaled.ik) {
+            sliding_cov_fast(long = x, short = template.scaled.ik)
+          })
+      } else {
+        sliding.func.out0 <-
+          lapply(template.scaled.i, function(template.scaled.ik) {
+            sliding_cov_fft(long = x, short = template.scaled.ik)
+          })
+      }
       maxes = pmax_max_cpp(sliding.func.out0)
       padding = rep(NA, length(template.scaled.i[[1]]) - 1)
       list(c(maxes$pmax, padding),
            c(maxes$idx, padding))
-      c(do.call(pmax, sliding.func.out0), rep(NA, length(template.scaled.i[[1]]) - 1))
     })
   } else if  (similarity.measure == "cor") {
     similarity.list <- lapply(template.scaled, function(template.scaled.i){
@@ -141,7 +111,6 @@ similarityMatrix <- function(x,
       list(c(current_max, padding),
            c(current_max_idx, padding))
     })
->>>>>>> 685171c (Merge template idx)
   } else {
     stop("Only 'cov' and 'cor' measures supported")
   }

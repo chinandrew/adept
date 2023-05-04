@@ -1,3 +1,5 @@
+#' Assumes short has mean 0.
+#'
 #' @noRd
 #'
 sliding_cov_fast <- function(short, long) {
@@ -14,13 +16,16 @@ sliding_cov_fft <- function(short, long) {
   return(convolve(long, c(short / (n - 1), rep(0,len_diff)))[1:(len_diff+1)])
 }
 
-
+#' Assumes short has mean 0 and sd 1.
+#'
 #' @noRd
 #'
 sliding_cor_store_sd <- function(short, long) {
   return(sliding_cor_store_sd_cpp(short, long, 1))
 }
 
+#' Assumes short has mean 0 and sd 1.
+#'
 #' @noRd
 #'
 sliding_cor_sd <- function(short, long, sds) {

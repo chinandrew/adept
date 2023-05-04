@@ -15,8 +15,7 @@ NumericVector convolve_cpp(const NumericVector a, const NumericVector b) {
 
 // Optimized version of
 // https://github.com/cran/dvmisc/blob/master/src/sliding_cor_c.cpp
-// that requires having the longvec standar deviations passed in.
-// Assumes shortvec is mean 0 with sd 1.
+// that requires having the longvec standard deviations passed in.
 // [[Rcpp::export]]
 NumericVector sliding_cor_sd_cpp(const NumericVector shortvec,
                                  const NumericVector longvec,
@@ -63,7 +62,6 @@ NumericVector sliding_cor_sd_cpp(const NumericVector shortvec,
 // https://github.com/cran/dvmisc/blob/master/src/sliding_cor_c.cpp
 // that also returns the longvec standard deviations for reuse in
 // sliding_cor_sd_cpp().
-// Assumes shortvec is mean 0 with sd 1.
 // [[Rcpp::export]]
 List sliding_cor_store_sd_cpp(const NumericVector shortvec,
                               const NumericVector longvec, double sd_shortvec) {

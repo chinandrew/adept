@@ -5,10 +5,6 @@ median_cpp <- function(x) {
     .Call('_adept_median_cpp', PACKAGE = 'adept', x)
 }
 
-update_pmax_max_cpp <- function(new_vec, new_idx, old_vec, old_idxs) {
-    .Call('_adept_update_pmax_max_cpp', PACKAGE = 'adept', new_vec, new_idx, old_vec, old_idxs)
-}
-
 pmax_max_cpp <- function(args) {
     .Call('_adept_pmax_max_cpp', PACKAGE = 'adept', args)
 }

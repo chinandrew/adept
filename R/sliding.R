@@ -1,3 +1,6 @@
+#' Sliding covariance, chooses convolve (fft) or convolve_cpp (direct loop)
+#' based on length of short input vector.
+#'
 #' Assumes short has mean 0.
 #'
 #' @noRd
@@ -5,9 +8,24 @@
 sliding_cov_fast <- function(short, long) {
   n <- length(short)
   len_diff <- length(long) - n
+  if (n < 400) {
+    return(convolve_cpp(long, rev(short / (n - 1)))[n:(n + len_diff)])
+  }
+  return(convolve(long, c(short / (n - 1), rep(0, len_diff)))[1:(len_diff + 1)])
+}
+
+#' Assumes short has mean 0.
+#'
+#' @noRd
+#'
+sliding_cov_direct <- function(short, long) {
+  n <- length(short)
+  len_diff <- length(long) - n
   return(convolve_cpp(long, rev(short / (n - 1)))[n:(n + len_diff)])
 }
 
+#' Assumes short has mean 0.
+#'
 #' @noRd
 #'
 sliding_cov_fft <- function(short, long) {

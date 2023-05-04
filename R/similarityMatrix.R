@@ -169,37 +169,3 @@ similarityMatrix <- function(x,
 #'
 #' @noRd
 #'
-templateIdxMatrix <- function(x,
-                          template.scaled,
-                          similarity.measure){
-
-  sliding.func <- switch(similarity.measure,
-                         "cov" = sliding_cov,
-                         "cor" = sliding_cor)
-
-  ## Outer lapply: iterate over pattern scales considered;
-  ## each lapply iteration fills one row of the output similarity matrix.
-  templateIdx.list <- lapply(template.scaled, function(template.scaled.i){
-
-    ## Inner lapply: iterate over, possibly, multiple patterns;
-    ## each lapply iteration returns a vector whose each element corresponds
-    ## to the highest value of similarity between signal \code{x} and
-    ## a short pattern
-    ## at a time point corresponding to this vector's element.
-    sliding.func.out0 <- lapply(template.scaled.i, function(template.scaled.ik){
-      do.call(sliding.func, list(long = x, short = template.scaled.ik))
-    })
-    c(max.col(t(do.call(rbind, sliding.func.out0)), ties.method = "first"),
-      rep(NA, length(template.scaled.i[[1]]) - 1))
-  })
-
-  ## rbind list elements (which are vectors) into a matrix
-  templateIdx.mat <- do.call(rbind, templateIdx.list)
-  return(templateIdx.mat)
-
-}
-
-
-
-
-

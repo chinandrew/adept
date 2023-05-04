@@ -3,7 +3,7 @@
 sliding_cov_fast <- function(short, long) {
   n <- length(short)
   len_diff <- length(long) - n
-  return(convolve_cpp(long, rev(short / (n - 1) - sum(short) / n / (n - 1)))[n:(n + len_diff)])
+  return(convolve_cpp(long, rev(short / (n - 1) ))[n:(n + len_diff)])
 }
 
 #' @noRd
@@ -18,11 +18,11 @@ sliding_cov_fft <- function(short, long) {
 #' @noRd
 #'
 sliding_cor_store_sd <- function(short, long) {
-  return(sliding_cor_store_sd_cpp(short, long, sd(short)))
+  return(sliding_cor_store_sd_cpp(short, long, 1))
 }
 
 #' @noRd
 #'
 sliding_cor_sd <- function(short, long, sds) {
-  return(sliding_cor_sd_cpp(short, long, sd(short), sds))
+  return(sliding_cor_sd_cpp(short, long, 1, sds))
 }

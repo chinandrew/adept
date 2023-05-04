@@ -1,31 +1,6 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
-
-// TODO move into own function
-// Adapted from https://stackoverflow.com/a/66020829,
-// Vectors should be of the same length.
-// [[Rcpp::export]]
-List pmax_max_cpp(List args) {
-  NumericVector tmp = args[0];
-  NumericVector out = clone(tmp);
-  NumericVector out_idx (out.length(), 1);
-  int n_arg = args.length();
-  int n_vec = out.length();
-  for (int i = 1; i < n_arg; ++i) {
-    NumericVector pa = args[i];
-    for (int j = 0; j < n_vec; ++j) {
-      if (pa[j] > out[j]) {
-        out[j] = pa[j];
-        out_idx[j] = i + 1;
-      }
-    }
-  }
-  return List::create(_["pmax"]=out,
-                      _["idx"]=out_idx);
-}
-
-
 // From https://dirk.eddelbuettel.com/code/rcpp/Rcpp-attributes.pdf
 // [[Rcpp::export]]
 NumericVector convolve_cpp(const NumericVector a, const NumericVector b) {
@@ -38,7 +13,6 @@ NumericVector convolve_cpp(const NumericVector a, const NumericVector b) {
   return xab;
 }
 
-
 // Optimized version of
 // https://github.com/cran/dvmisc/blob/master/src/sliding_cor_c.cpp
 // that requires having the longvec standar deviations passed in.
@@ -48,7 +22,6 @@ NumericVector sliding_cor_sd_cpp(const NumericVector shortvec,
                                  const NumericVector longvec,
                                  double sd_shortvec,
                                  const NumericVector sd_longvec_current) {
-
   // Get vector lengths and initialize output vector
   int length_longvec = longvec.size();
   int n = shortvec.size();
@@ -69,17 +42,20 @@ NumericVector sliding_cor_sd_cpp(const NumericVector shortvec,
     double longvec_current_b = longvec[b];
     sum_products += longvec_current_b * shortvec[b];
   }
-  out[0] = (sum_products / n_minus1 - sum_longvec_current * term2) / sd_shortvec / sd_longvec_current[0];
+  out[0] = (sum_products / n_minus1 - sum_longvec_current * term2) /
+    sd_shortvec / sd_longvec_current[0];
 
   for (int a = 1; a < out_length; ++a) {
-    sum_longvec_current -= longvec[a-1];
-    sum_longvec_current += longvec[a+n_minus1];
+    sum_longvec_current -= longvec[a - 1];
+    sum_longvec_current += longvec[a + n_minus1];
     sum_products = 0;
     for (int b = 0; b < n; ++b) {
-      double longvec_current_b = longvec[a+b];
+      double longvec_current_b = longvec[a + b];
       sum_products += longvec_current_b * shortvec[b];
     }
-    out[a] = (sum_products / n_minus1 - sum_longvec_current * term2) / sd_shortvec / sd_longvec_current[a];  }
+    out[a] = (sum_products / n_minus1 - sum_longvec_current * term2) /
+      sd_shortvec / sd_longvec_current[a];
+  }
   return out;
 }
 
@@ -89,8 +65,8 @@ NumericVector sliding_cor_sd_cpp(const NumericVector shortvec,
 // sliding_cor_sd_cpp().
 // Assumes shortvec is mean 0 with sd 1.
 // [[Rcpp::export]]
-List sliding_cor_store_sd_cpp(const NumericVector shortvec, const NumericVector longvec, double sd_shortvec) {
-
+List sliding_cor_store_sd_cpp(const NumericVector shortvec,
+                              const NumericVector longvec, double sd_shortvec) {
   // Get vector lengths and initialize output vector
   int length_longvec = longvec.size();
   int n = shortvec.size();
@@ -116,33 +92,34 @@ List sliding_cor_store_sd_cpp(const NumericVector shortvec, const NumericVector 
     ss_longvec_current += pow(longvec_current_b - mean_longvec_current, 2);
   }
   double sd_longvec_current = sqrt(ss_longvec_current / n_minus1);
-  if (sd_longvec_current < 1e-10){
-    out[0] =  NA_REAL;
-    sds[0] =  NA_REAL; // could also set to 0 to get Infs downstream
-  } else{
-    out[0] = (sum_products / n_minus1 - sum_longvec_current * term2) / sd_shortvec / sd_longvec_current;
+  if (sd_longvec_current < 1e-10) {
+    out[0] = NA_REAL;
+    sds[0] = NA_REAL; // could also set to 0 to get Infs downstream
+  } else {
+    out[0] = (sum_products / n_minus1 - sum_longvec_current * term2) /
+      sd_shortvec / sd_longvec_current;
     sds[0] = sd_longvec_current;
   }
   for (int a = 1; a < out_length; ++a) {
-    sum_longvec_current -= longvec[a-1];
-    sum_longvec_current += longvec[a+n_minus1];
+    sum_longvec_current -= longvec[a - 1];
+    sum_longvec_current += longvec[a + n_minus1];
     mean_longvec_current = sum_longvec_current / n;
     sum_products = 0;
     ss_longvec_current = 0;
     for (int b = 0; b < n; ++b) {
-      double longvec_current_b = longvec[a+b];
+      double longvec_current_b = longvec[a + b];
       sum_products += longvec_current_b * shortvec[b];
       ss_longvec_current += pow(longvec_current_b - mean_longvec_current, 2);
     }
     sd_longvec_current = sqrt(ss_longvec_current / n_minus1);
-    if (sd_longvec_current < 1e-10){
-      out[a] =  NA_REAL;
-      sds[a] =  NA_REAL;
-    } else{
-      out[a] = (sum_products / n_minus1 - sum_longvec_current * term2) / sd_shortvec / sd_longvec_current;
+    if (sd_longvec_current < 1e-10) {
+      out[a] = NA_REAL;
+      sds[a] = NA_REAL;
+    } else {
+      out[a] = (sum_products / n_minus1 - sum_longvec_current * term2) /
+        sd_shortvec / sd_longvec_current;
       sds[a] = sd_longvec_current;
     }
-
   }
   return List::create(_["cor"] = out, _["sds"] = sds);
 }

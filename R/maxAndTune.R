@@ -117,7 +117,7 @@ finetune_maxima <- function(s.TMP,
   x.mat.VALID <- x.mat * tau12.mat.VALID
 
   wm <- which.max(x.mat.VALID)
-  which.out   <- idx_to_rowcol(wm, nrow(x.mat.VALID))
+  which.out <- idx_to_rowcol(wm, nrow(x.mat.VALID))
 
   ## Define "tuned" start and end index point of identified pattern occurence
   ## within a time-series \code{x}

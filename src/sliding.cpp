@@ -134,6 +134,7 @@ List sliding_cor_store_sd_cpp(const NumericVector shortvec, const NumericVector 
       sum_products += longvec_current_b * shortvec[b];
       ss_longvec_current += pow(longvec_current_b - mean_longvec_current, 2);
     }
+    sd_longvec_current = sqrt(ss_longvec_current / n_minus1);
     if (sd_longvec_current < 1e-10){
       out[a] =  NA_REAL;
       sds[a] =  NA_REAL;
@@ -141,7 +142,6 @@ List sliding_cor_store_sd_cpp(const NumericVector shortvec, const NumericVector 
       out[a] = (sum_products / n_minus1 - sum_longvec_current * term2) / sd_shortvec / sd_longvec_current;
       sds[a] = sd_longvec_current;
     }
-    sd_longvec_current = sqrt(ss_longvec_current / n_minus1);
 
   }
   return List::create(_["cor"] = out, _["sds"] = sds);

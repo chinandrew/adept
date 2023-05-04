@@ -7,12 +7,9 @@ using namespace Rcpp;
 // Vectors should be of the same length.
 // [[Rcpp::export]]
 List pmax_max_cpp(List args) {
-  // int max_i = 0;
-  int max_j = 0;
   NumericVector tmp = args[0];
   NumericVector out = clone(tmp);
   NumericVector out_idx (out.length(), 1);
-  double current_max = out[0];
   int n_arg = args.length();
   int n_vec = out.length();
   for (int i = 1; i < n_arg; ++i) {
@@ -48,8 +45,9 @@ NumericVector convolve_cpp(const NumericVector a, const NumericVector b) {
 // Assumes shortvec is mean 0 with sd 1.
 // [[Rcpp::export]]
 NumericVector sliding_cor_sd_cpp(const NumericVector shortvec,
-                                      const NumericVector longvec,
-                                      const NumericVector sd_longvec_current) {
+                                 const NumericVector longvec,
+                                 double sd_shortvec,
+                                 const NumericVector sd_longvec_current) {
 
   // Get vector lengths and initialize output vector
   int length_longvec = longvec.size();
@@ -58,18 +56,20 @@ NumericVector sliding_cor_sd_cpp(const NumericVector shortvec,
   int out_length = length_longvec - n_minus1;
   NumericVector out(out_length);
 
+  // Calculate sum of short vector divided by n nsquared
+  double term2 = sum(shortvec) / n / n_minus1;
+
   // Loop through longvec. For each segment calculate the sum of the products
   // with shortvec and record the covariance
   NumericVector longvec_current(n);
   longvec_current = longvec[Range(0, n_minus1)];
   double sum_longvec_current = sum(longvec_current);
   double sum_products = 0;
-  double test = 0;
   for (int b = 0; b < n; ++b) {
     double longvec_current_b = longvec[b];
     sum_products += longvec_current_b * shortvec[b];
   }
-  out[0] = (sum_products / n_minus1) / sd_longvec_current[0];
+  out[0] = (sum_products / n_minus1 - sum_longvec_current * term2) / sd_shortvec / sd_longvec_current[0];
 
   for (int a = 1; a < out_length; ++a) {
     sum_longvec_current -= longvec[a-1];
@@ -79,8 +79,7 @@ NumericVector sliding_cor_sd_cpp(const NumericVector shortvec,
       double longvec_current_b = longvec[a+b];
       sum_products += longvec_current_b * shortvec[b];
     }
-    out[a] = (sum_products / n_minus1) / sd_longvec_current[a];
-  }
+    out[a] = (sum_products / n_minus1 - sum_longvec_current * term2) / sd_shortvec / sd_longvec_current[a];  }
   return out;
 }
 
@@ -90,7 +89,7 @@ NumericVector sliding_cor_sd_cpp(const NumericVector shortvec,
 // sliding_cor_sd_cpp().
 // Assumes shortvec is mean 0 with sd 1.
 // [[Rcpp::export]]
-List sliding_cor_store_sd_cpp(const NumericVector shortvec, const NumericVector longvec) {
+List sliding_cor_store_sd_cpp(const NumericVector shortvec, const NumericVector longvec, double sd_shortvec) {
 
   // Get vector lengths and initialize output vector
   int length_longvec = longvec.size();
@@ -99,6 +98,9 @@ List sliding_cor_store_sd_cpp(const NumericVector shortvec, const NumericVector 
   int out_length = length_longvec - n_minus1;
   NumericVector out(out_length);
   NumericVector sds(out_length);
+
+  // Calculate sum of short vector divided by n nsquared
+  double term2 = sum(shortvec) / n / n_minus1;
 
   // Loop through longvec. For each segment calculate the sum of the products
   // with shortvec and record the covariance
@@ -118,7 +120,7 @@ List sliding_cor_store_sd_cpp(const NumericVector shortvec, const NumericVector 
     out[0] =  NA_REAL;
     sds[0] =  NA_REAL; // could also set to 0 to get Infs downstream
   } else{
-    out[0] = (sum_products / n_minus1) / sd_longvec_current;
+    out[0] = (sum_products / n_minus1 - sum_longvec_current * term2) / sd_shortvec / sd_longvec_current;
     sds[0] = sd_longvec_current;
   }
   for (int a = 1; a < out_length; ++a) {
@@ -136,7 +138,7 @@ List sliding_cor_store_sd_cpp(const NumericVector shortvec, const NumericVector 
       out[a] =  NA_REAL;
       sds[a] =  NA_REAL;
     } else{
-      out[a] = (sum_products / n_minus1) / sd_longvec_current;
+      out[a] = (sum_products / n_minus1 - sum_longvec_current * term2) / sd_shortvec / sd_longvec_current;
       sds[a] = sd_longvec_current;
     }
     sd_longvec_current = sqrt(ss_longvec_current / n_minus1);

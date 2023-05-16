@@ -4,7 +4,9 @@
 #' ADEPT Similarity Matrix Computation
 #'
 #' Compute ADEPT similarity matrix between a time-series \code{x} and a collection
-#' of scaled templates.
+#' of scaled templates. Also compute matrix of pattern templates yielding the
+#' highest similarity between a time-series \code{x} and a collection
+#' of scaled pattern templates.
 #'
 #' @param x A numeric vector. A time-series \code{x}.
 #' @param template.scaled A list of lists of numeric vectors, as returned by
@@ -20,7 +22,7 @@
 #'   \item "cor" - for correlation.
 #' }
 #'
-#' @return A numeric matrix. Contains values of similarity between a time-series \code{x}
+#' @return A list of two numeric matrices. "similarity" contains values of similarity between a time-series \code{x}
 #' and scaled templates.
 #' \itemize{
 #'   \item Number of rows equals \code{template.scaled} length,
@@ -30,6 +32,13 @@
 #'   Precisely, each row's element is a maximum out of similarity values
 #'  computed for each distinct template used in segmentation.
 #' }
+#'
+#' "idx" represents number of pattern template
+#' yielding the highest similarity
+#' between a time-series \code{x} and a collection
+#' of scaled pattern templates. Precisely, the number
+#' is the order in which particular pattern template was provided in
+#' the \code{template} list in \code{segmentPattern}.
 #'
 #' @seealso \code{scaleTemplate {adept}}
 #'
@@ -123,39 +132,3 @@ get_cor_similarities <- function(x, template.scaled){
   })
 }
 
-
-
-
-
-#'  TODO merge with similarityMatrix documentation
-#' Template Index Matrix Computation
-#'
-#' Compute matrix of pattern templates yielding the highest similarity
-#' between a time-series \code{x} and a collection
-#' of scaled pattern templates.
-#'
-#' @param x A numeric vector. A time-series \code{x}.
-#' @param template.scaled A list of lists of numeric vectors, as returned by
-#' \code{scaleTemplate}.  Each element of
-#' \code{template.scaled}
-#' is a list of pattern templates interpolated to a particular vector length.
-#'  Number of elements in the \code{template.scaled}  corresponds to the
-#'  number of unique template length values used in segmentation.
-#' @param similarity.measure A character scalar. Statistic
-#' used in similarity matrix computation; one of the following:
-#' \itemize{
-#'   \item "cov" - for covariance,
-#'   \item "cor" - for correlation.
-#' }
-#'
-#' @return A numerc matrix. Represents number of pattern template
-#' yielding the highest similarity
-#' between a time-series \code{x} and a collection
-#' of scaled pattern templates. Precisely, the number
-#' is the order in which particular pattern template was provided in
-#' the \code{template} list in \code{segmentPattern}.
-#'
-#' @import dvmisc
-#'
-#' @noRd
-#'
